@@ -1,0 +1,133 @@
+package controller;
+
+import model.bo.SongBO;
+import model.bo.PlaylistBO;
+import model.bo.CategoryBO;
+import model.bo.SingerBO;
+import model.bean.User;
+import model.bean.Song;
+import model.bean.Category;
+import model.bean.Singer;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+
+public class SongController extends HttpServlet {
+    private final SongBO songBO = new SongBO();
+    private final PlaylistBO playlistBO = new PlaylistBO();
+    private final CategoryBO categoryBO = new CategoryBO();
+    private final SingerBO singerBO = new SingerBO();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String path = req.getPathInfo();
+        
+        try {
+            // Route: /song/category?id=X - Play category
+            if ("/category".equals(path)) {
+                handleCategory(req, resp);
+            }
+            // Route: /song/singer?id=X - Play singer's songs
+            else if ("/singer".equals(path)) {
+                handleSinger(req, resp);
+            }
+            // Route: /song?id=X - Play single song
+            else {
+                handleSingleSong(req, resp);
+            }
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
+    
+    private void handleSingleSong(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String idStr = req.getParameter("id");
+        int id = Integer.parseInt(idStr);
+        Song s = songBO.get(id);
+        if (s != null) {
+            songBO.increaseView(id);
+            req.setAttribute("song", s);
+            User u = (User) req.getSession().getAttribute("user");
+            if (u != null) {
+                req.setAttribute("userPlaylists", playlistBO.byUser(u.getId()));
+            }
+            req.getRequestDispatcher("/WEB-INF/views/song.jsp").forward(req, resp);
+        } else {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+    
+    private void handleCategory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        int categoryId = Integer.parseInt(req.getParameter("id"));
+        Category category = categoryBO.get(categoryId);
+        List<Song> songs = songBO.getByCategory(categoryId, 100);
+        
+        if (category == null || songs.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        
+        // Load singer map for display
+        List<Singer> allSingers = singerBO.all();
+        java.util.Map<Integer, String> singerMap = new java.util.HashMap<>();
+        for (Singer singer : allSingers) {
+            singerMap.put(singer.getId(), singer.getName());
+        }
+        
+        // First song to play
+        Song currentSong = songs.get(0);
+        songBO.increaseView(currentSong.getId());
+        
+        req.setAttribute("currentSong", currentSong);
+        req.setAttribute("playlist", songs);
+        req.setAttribute("playlistTitle", category.getName());
+        req.setAttribute("playlistType", "category");
+        req.setAttribute("singerMap", singerMap);
+        
+        User u = (User) req.getSession().getAttribute("user");
+        if (u != null) {
+            req.setAttribute("userPlaylists", playlistBO.byUser(u.getId()));
+        }
+        
+        req.getRequestDispatcher("/WEB-INF/views/player.jsp").forward(req, resp);
+    }
+    
+    private void handleSinger(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        int singerId = Integer.parseInt(req.getParameter("id"));
+        Singer singer = singerBO.get(singerId);
+        List<Song> songs = songBO.getBySinger(singerId, 100);
+        
+        if (singer == null || songs.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        
+        // Load singer map
+        List<Singer> allSingers = singerBO.all();
+        java.util.Map<Integer, String> singerMap = new java.util.HashMap<>();
+        for (Singer s : allSingers) {
+            singerMap.put(s.getId(), s.getName());
+        }
+        
+        // First song to play
+        Song currentSong = songs.get(0);
+        songBO.increaseView(currentSong.getId());
+        
+        req.setAttribute("currentSong", currentSong);
+        req.setAttribute("playlist", songs);
+        req.setAttribute("playlistTitle", singer.getName());
+        req.setAttribute("playlistType", "singer");
+        req.setAttribute("singerMap", singerMap);
+        
+        User u = (User) req.getSession().getAttribute("user");
+        if (u != null) {
+            req.setAttribute("userPlaylists", playlistBO.byUser(u.getId()));
+        }
+        
+        req.getRequestDispatcher("/WEB-INF/views/player.jsp").forward(req, resp);
+    }
+}

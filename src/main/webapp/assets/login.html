@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Nhạc - Test Hiệu ứng</title>
+    <style>
+        /* -------------------------- */
+        /* 1. CSS CƠ BẢN VÀ THIẾT LẬP NỀN TỐI */
+        /* -------------------------- */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Tông nền tối sang trọng */
+            background-color: #121212; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #E0E0E0; /* Màu chữ sáng */
+            overflow: hidden; /* Quan trọng cho Parallax */
+        }
+
+        /* -------------------------- */
+        /* 2. HIỆU ỨNG HÌNH NỀN VÀ PARALLAX */
+        /* -------------------------- */
+        .background-container {
+            position: absolute;
+            width: 100%; /* Lớn hơn viewport để có không gian di chuyển */
+            height: 100%;
+            top: 0%;
+            left: 0%;
+            background-image: url('avatars/login.png'); 
+            /* Thay thế URL này bằng ảnh DJ/Sân khấu của bạn */
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(1); /* Làm mờ và tối ảnh nền */
+            transition: transform 0.3s ease-out; /* Tạo chuyển động mượt */
+            z-index: 1; /* Nằm dưới form */
+        }
+        
+        /* -------------------------- */
+        /* 3. KHỐI FORM VÀ PHONG CÁCH NEON */
+        /* -------------------------- */
+        .login-box {
+            position: relative;
+            z-index: 10;
+            background: rgba(20, 20, 20, 0.85); /* Nền bán trong suốt của form */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4); /* Đổ bóng neon xanh */
+            width: 350px;
+            text-align: center;
+            /* Hiệu ứng phát sáng nhẹ cho form */
+            border: 1px solid rgba(0, 255, 255, 0.2); 
+        }
+
+        .login-box h2 {
+            color: #00FFFF; /* Màu Neon Accent */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.8); /* Hiệu ứng phát sáng cho chữ */
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #99FFFF;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 16px;
+            box-sizing: border-box; /* Quan trọng để padding không làm tăng width */
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-bottom: 2px solid #00FFFF;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            background: #FF00FF; /* Màu Neon Accent thứ hai: Magenta */
+            border: none;
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+            /* Hiệu ứng phát sáng cho nút */
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.6); 
+        }
+
+        .login-button:hover {
+            background: #CC00CC;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 1); /* Phát sáng mạnh hơn khi hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="background-container" id="background"></div>
+
+    <div class="login-box">
+        <h2>Đăng Nhập</h2>
+        <form>
+            <div class="input-group">
+                <label for="username">Tên người dùng</label>
+                <input type="text" id="username" placeholder="Nhập tên của bạn">
+            </div>
+            <div class="input-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" id="password" placeholder="Nhập mật khẩu">
+            </div>
+            <button type="submit" class="login-button">Vào Nhạc Thôi!</button>
+        </form>
+    </div>
+
+    <script>
+        const background = document.getElementById('background');
+
+        document.addEventListener('mousemove', (e) => {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Tính toán mức độ di chuyển dựa trên vị trí chuột
+            // Biên độ dịch chuyển 1% (chia cho 100)
+            const moveX = (e.clientX - centerX) / 100;
+            const moveY = (e.clientY - centerY) / 100;
+
+            // Áp dụng transform để di chuyển hình nền
+            background.style.transform = `translate(${moveX}px, ${moveY}px) scale(1)`; 
+        });
+    </script>
+</body>
+</html>

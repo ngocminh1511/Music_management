@@ -1,0 +1,204 @@
+1. Giới thiệu đề tài
+
+Website âm nhạc là hệ thống cho phép người dùng nghe nhạc trực tuyến, quản lý playlist, xem thông tin ca sĩ – bài hát, và quản trị kho dữ liệu âm nhạc. Đề tài sử dụng JSP/Servlet để xây dựng backend theo mô hình MVC, kết hợp MySQL làm cơ sở dữ liệu.
+
+2. Lý do chọn đề tài
+
+Nhu cầu nghe nhạc online cao, mô phỏng các nền tảng như Zing MP3, Nhaccuatui.
+
+JSP/Servlet vẫn là nền tảng phổ biến trong đào tạo web Java.
+
+Đề tài giúp hiểu sâu về:
+
+MVC (phân tách Model – View – Controller)
+
+Luồng xử lý Request/Response
+
+Quản lý session, upload file (ảnh, audio)
+
+Tương tác cơ sở dữ liệu với MySQL
+
+3. Mục tiêu của đề tài
+Mục tiêu tổng quát
+
+Xây dựng một website nghe nhạc cơ bản, cho phép:
+
+Người dùng xem, tìm kiếm, nghe nhạc.
+
+Đăng ký / đăng nhập.
+
+Tạo playlist cá nhân.
+
+Quản trị viên quản lý kho nhạc, ca sĩ, thể loại, bài hát.
+
+Mục tiêu cụ thể
+
+Áp dụng mô hình MVC:
+
+Model: Lớp xử lý dữ liệu, kết nối MySQL.
+
+View: JSP hiển thị giao diện.
+
+Controller: Servlet điều hướng và xử lý logic.
+
+Xây dựng cơ sở dữ liệu chuẩn hoá, tối ưu truy vấn.
+
+Tự triển khai player audio trên web (thẻ <audio>).
+
+Xây dựng chức năng login với session, mã hoá mật khẩu (BCrypt).
+
+Xử lý upload file nhạc + ảnh (Servlet 3.0 File Upload).
+
+4. Phân tích yêu cầu
+4.1 Chức năng người dùng
+(1) Không cần đăng nhập
+
+Xem danh sách bài hát mới nhất
+
+Xem danh sách ca sĩ / thể loại
+
+Nghe thử nhạc
+
+Tìm kiếm (bài hát, ca sĩ, album)
+
+(2) Có tài khoản
+
+Nghe toàn bộ bài hát
+
+Tạo, sửa, xoá playlist
+
+Thêm bài hát vào playlist
+
+Quản lý thông tin cá nhân
+
+4.2 Chức năng quản trị (Admin)
+
+Quản lý bài hát
+
+Thêm file nhạc, ảnh bìa
+
+Sửa thông tin
+
+Xoá bài hát
+
+Quản lý ca sĩ, thể loại
+
+Quản lý tài khoản
+
+Thống kê lượt nghe (nếu mở rộng)
+
+5. Phân tích nghiệp vụ (Use Case)
+User:
+
+Login / Register
+
+Search Music
+
+Play Music
+
+Create Playlist
+
+Add song to Playlist
+
+View Singer / Category
+
+Admin:
+
+CRUD Song
+
+CRUD Singer
+
+CRUD Category
+
+Manage Users
+
+6. Phân tích cơ sở dữ liệu (MySQL)
+Các bảng chính đề xuất
+users (id, username, password, email, role)
+songs (id, title, singer_id, category_id, file_path, thumbnail, view_count, upload_date)
+singers (id, name, description, avatar)
+categories (id, name)
+playlists (id, user_id, name)
+playlist_song (playlist_id, song_id)
+
+Đặc điểm
+
+Chuẩn hoá 3NF
+
+Sử dụng khóa ngoại (FK)
+
+Tăng tốc tìm kiếm bằng index (title, singer_id)
+
+7. Kiến trúc hệ thống (MVC)
+Model
+
+Lớp kết nối DB (DBContext)
+
+DAO: SongDAO, UserDAO, PlaylistDAO …
+
+View
+
+JSP + JSTL
+
+HTML/CSS
+
+Có thể dùng Bootstrap để đẹp hơn
+
+Controller
+
+Các Servlet đảm nhiệm:
+
+HomeController
+
+SongController
+
+AdminController
+
+AuthController
+
+PlaylistController
+
+8. Quy trình xử lý ví dụ (Play Music)
+
+User click bài hát → gửi request:
+GET /song?id=10
+
+Servlet nhận request → gọi SongDAO.getById(10)
+
+Trả về Song object
+
+JSP render giao diện + player nhạc
+
+Nếu user nghe → tăng view_count
+
+9. Công nghệ sử dụng
+
+Ngôn ngữ: Java, JSP, Servlet
+
+CSDL: MySQL
+
+JDBC để kết nối DB
+
+Bootstrap 4/5
+
+Tomcat làm server
+
+Maven / Gradle (tuỳ chọn)
+
+JSTL để viết JSP sạch hơn
+
+10. Phạm vi – Giới hạn
+
+Phạm vi
+
+Hệ thống âm nhạc cơ bản, không streaming nâng cao.
+
+Upload file nhạc tối đa < 20MB.
+
+Không xử lý bản quyền nhạc thực.
+
+Giới hạn
+
+Không có hệ thống đề xuất nhạc AI.
+
+Chưa có tính năng social (bình luận, like).
