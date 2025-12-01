@@ -1,8 +1,13 @@
 package model.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import model.DBContext;
 import model.bean.Singer;
 
@@ -13,7 +18,9 @@ public class SingerDAO {
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             List<Singer> list = new ArrayList<>();
-            while (rs.next()) list.add(map(rs));
+            while (rs.next()) {
+				list.add(map(rs));
+			}
             return list;
         }
     }
@@ -24,7 +31,9 @@ public class SingerDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return map(rs);
+                if (rs.next()) {
+					return map(rs);
+				}
                 return null;
             }
         }
@@ -39,7 +48,9 @@ public class SingerDAO {
             ps.setString(3, s.getAvatar());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (keys.next()) return keys.getInt(1);
+                if (keys.next()) {
+					return keys.getInt(1);
+				}
             }
             return 0;
         }
@@ -85,7 +96,9 @@ public class SingerDAO {
             ps.setInt(1, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 List<Singer> list = new ArrayList<>();
-                while (rs.next()) list.add(map(rs));
+                while (rs.next()) {
+					list.add(map(rs));
+				}
                 return list;
             }
         }

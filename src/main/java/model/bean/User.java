@@ -1,11 +1,17 @@
 package model.bean;
 
+import java.util.Date;
+
 public class User {
     private int id;
     private String username;
     private String password;
     private String email;
     private String role;
+    private String avatar;
+    private String bio;
+    private Date createdAt;
+    private Date updatedAt;
 
     public User() {}
 
@@ -27,4 +33,12 @@ public class User {
     public void setEmail(String email) { this.email = email; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public Date getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
 }

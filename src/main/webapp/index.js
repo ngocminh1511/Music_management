@@ -79,7 +79,7 @@
             <div class="card">
                 <div class="card-number">0${data.id}</div>
                 <div class="card-image">
-                    <img src="${imageSrc}" alt="${data.title}" onerror="this.src='${ctx}/assets/thumbs/default.jpg'">
+                    <img src="${imageSrc}" alt="${data.title}" onerror="this.src='${ctx}/assets/thumbs/default.png'">
                 </div>
                 <h3 class="card-title">${data.title}</h3>
                 <p class="card-description">${data.description}</p>

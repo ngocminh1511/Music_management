@@ -25,8 +25,8 @@ body {
 }
 
 .main-content {
-    min-height: 80vh;
-    padding: 2rem 0;
+    min-height: calc(100vh - 80px - 400px);
+    padding-top: 80px;
 }
 
 /* Header styles - matches landing page */
@@ -43,13 +43,13 @@ body {
 }
 
 .nav-container {
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
-    padding: 1rem 2rem;
+    padding: 1rem 3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 /* Search Bar Styles */
@@ -168,6 +168,18 @@ body {
     align-items: center;
 }
 
+.nav-link.home-icon {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    margin-right: -0.5rem;
+}
+
+.nav-link.home-icon i {
+    font-size: 1.5rem;
+}
+
 .nav-link {
     color: var(--text-primary);
     text-decoration: none;
@@ -195,6 +207,88 @@ body {
 
 .nav-link:hover {
     color: var(--accent-purple);
+}
+
+/* User Dropdown */
+.user-dropdown {
+    position: relative;
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.user-avatar:hover {
+    background: rgba(122, 92, 255, 0.1);
+}
+
+.user-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-purple);
+}
+
+.user-avatar span {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.user-avatar i {
+    color: var(--text-secondary);
+    transition: transform 0.3s;
+}
+
+.user-dropdown:hover .user-avatar i {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: var(--bg-card);
+    border: 1px solid rgba(122, 92, 255, 0.2);
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    min-width: 180px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.dropdown-menu.active {
+    display: block !important;
+    animation: fadeIn 0.2s ease;
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(122, 92, 255, 0.1);
+    color: var(--accent-purple);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .menu-toggle {

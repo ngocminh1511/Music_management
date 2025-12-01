@@ -1,18 +1,19 @@
 package controller;
 
-import model.bo.SongBO;
-import model.bo.CategoryBO;
-import model.bo.SingerBO;
-import model.bean.Song;
-import model.bean.Category;
-import model.bean.Singer;
+import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
+
+import model.bean.Category;
+import model.bean.Singer;
+import model.bean.Song;
+import model.bo.CategoryBO;
+import model.bo.SingerBO;
+import model.bo.SongBO;
 
 public class HomeController extends HttpServlet {
     private final SongBO songBO = new SongBO();
@@ -26,9 +27,9 @@ public class HomeController extends HttpServlet {
             String categoryIdParam = req.getParameter("category");
             String singerIdParam = req.getParameter("singer");
             String modeParam = req.getParameter("mode");
-            
+
             List<Song> songs;
-            
+
             // Lọc theo category hoặc singer nếu có
             if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
                 int categoryId = Integer.parseInt(categoryIdParam);
@@ -41,26 +42,26 @@ public class HomeController extends HttpServlet {
             } else {
                 songs = songBO.latest(12);
             }
-            
+
             // Load categories, top songs, top singers
             List<Category> categories = categoryBO.all();
             List<Song> topSongs = songBO.getTopByViews(10);
             List<Singer> topSingers = singerBO.getTopSingers(10);
-            
+
             // Load all singers as Map for easy lookup
             List<Singer> allSingers = singerBO.all();
             java.util.Map<Integer, String> singerMap = new java.util.HashMap<>();
             for (Singer singer : allSingers) {
                 singerMap.put(singer.getId(), singer.getName());
             }
-            
+
             req.setAttribute("songs", songs);
             req.setAttribute("categories", categories);
             req.setAttribute("topSongs", topSongs);
             req.setAttribute("topSingers", topSingers);
             req.setAttribute("singerMap", singerMap);
             req.setAttribute("currentMode", modeParam != null ? modeParam : "1");
-            
+
             req.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(req, resp);
         } catch (Exception e) {
             throw new ServletException(e);

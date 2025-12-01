@@ -2,6 +2,7 @@ package model.bo;
 
 import java.sql.SQLException;
 import java.util.List;
+
 import model.bean.Song;
 import model.dao.SongDAO;
 
@@ -43,7 +44,7 @@ public class SongBO {
     public void delete(int id) throws SQLException { songDAO.delete(id); }
     public int count() throws SQLException { return songDAO.count(); }
     public long sumViews() throws SQLException { return songDAO.sumViews(); }
-    
+
     // Thống kê theo thời gian
     public long sumViewsByDateRange(String startDate, String endDate) throws SQLException {
         return songDAO.sumViewsByDateRange(startDate, endDate);

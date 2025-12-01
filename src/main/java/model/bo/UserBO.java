@@ -3,6 +3,7 @@ package model.bo;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import model.bean.User;
 import model.dao.UserDAO;
 
@@ -51,5 +52,9 @@ public class UserBO {
 
     public java.util.List<java.util.Map<String, Object>> getTopUsersByPlaylistCount(int limit) throws SQLException {
         return dao.getTopUsersByPlaylistCount(limit);
+    }
+
+    public boolean updateProfile(int userId, String username, String email, String bio, String avatarPath) throws SQLException {
+        return dao.updateProfile(userId, username, email, bio, avatarPath);
     }
 }

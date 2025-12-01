@@ -1,21 +1,22 @@
 package controller;
 
-import model.bo.PlaylistBO;
-import model.bo.SingerBO;
-import model.bo.SongBO;
-import model.bean.Playlist;
-import model.bean.Singer;
-import model.bean.Song;
-import model.bean.User;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import model.bean.Playlist;
+import model.bean.Singer;
+import model.bean.Song;
+import model.bean.User;
+import model.bo.PlaylistBO;
+import model.bo.SingerBO;
+import model.bo.SongBO;
 
 public class PlaylistController extends HttpServlet {
     private final PlaylistBO playlistBO = new PlaylistBO();
@@ -33,28 +34,47 @@ public class PlaylistController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        User user = requireUser(req, resp);
-        if (user == null) return;
-        try {
-            // API endpoint for AJAX
-            if ("/api/list".equals(path)) {
-                resp.setContentType("application/json");
-                resp.setCharacterEncoding("UTF-8");
-                List<Playlist> lists = playlistBO.byUser(user.getId());
+        
+        // API endpoint for AJAX - check auth first
+        if ("/api/list".equals(path)) {
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            
+            try {
+                User user = (User) req.getSession().getAttribute("user");
+                if (user == null) {
+                    resp.getWriter().write("[]");
+                    return;
+                }
                 
+                List<Playlist> lists = playlistBO.byUser(user.getId());
+
                 StringBuilder json = new StringBuilder("[");
                 for (int i = 0; i < lists.size(); i++) {
                     Playlist p = lists.get(i);
-                    if (i > 0) json.append(",");
+                    if (i > 0) {
+                        json.append(",");
+                    }
                     json.append("{\"id\":").append(p.getId())
                         .append(",\"name\":\"").append(p.getName().replace("\"", "\\\"")).append("\"}");
                 }
                 json.append("]");
-                
+
                 resp.getWriter().write(json.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+                resp.getWriter().write("[]");
+            }
+            return;
+        }
+
+        try {
+            // Other endpoints require login
+            User user = requireUser(req, resp);
+            if (user == null) {
                 return;
             }
-            
+
             if (path == null || "/".equals(path)) {
                 List<Playlist> lists = playlistBO.byUser(user.getId());
                 req.setAttribute("playlists", lists);
@@ -62,7 +82,7 @@ public class PlaylistController extends HttpServlet {
             } else if ("/view".equals(path)) {
                 int id = Integer.parseInt(req.getParameter("id"));
                 List<Song> songs = playlistBO.songs(id, user.getId());
-                
+
                 // Get playlist name - simplified approach
                 List<Playlist> userPlaylists = playlistBO.byUser(user.getId());
                 Playlist currentPlaylist = null;
@@ -72,28 +92,30 @@ public class PlaylistController extends HttpServlet {
                         break;
                     }
                 }
-                
+
                 // Build singer map
                 List<Singer> allSingers = singerBO.all();
                 Map<Integer, String> singerMap = new HashMap<>();
                 for (Singer singer : allSingers) {
                     singerMap.put(singer.getId(), singer.getName());
                 }
-                
+
                 // Search functionality
                 String q = req.getParameter("q");
                 List<Song> searchResults = null;
                 if (q != null && !q.isEmpty()) {
                     searchResults = songBO.search(q);
                 }
-                
+
                 req.setAttribute("playlist", currentPlaylist);
                 req.setAttribute("songs", songs);
                 req.setAttribute("singerMap", singerMap);
                 req.setAttribute("playlistId", id);
                 req.setAttribute("searchQuery", q);
                 req.setAttribute("searchResults", searchResults);
-                req.getRequestDispatcher("/WEB-INF/views/playlist_detail.jsp").forward(req, resp);
+
+                // Return JSP fragment for AJAX
+                req.getRequestDispatcher("/WEB-INF/views/components/playlist-view.jsp").forward(req, resp);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -106,21 +128,23 @@ public class PlaylistController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
         User user = requireUser(req, resp);
-        if (user == null) return;
+        if (user == null) {
+			return;
+		}
         try {
             // Rename playlist API
             if ("/rename".equals(path)) {
                 resp.setContentType("application/json");
                 resp.setCharacterEncoding("UTF-8");
-                
+
                 int id = Integer.parseInt(req.getParameter("id"));
                 String name = req.getParameter("name");
-                
+
                 if (name == null || name.trim().isEmpty()) {
                     resp.getWriter().write("{\"success\":false,\"message\":\"Tên không được để trống\"}");
                     return;
                 }
-                
+
                 boolean success = playlistBO.rename(id, name.trim(), user.getId());
                 if (success) {
                     resp.getWriter().write("{\"success\":true}");
@@ -129,7 +153,7 @@ public class PlaylistController extends HttpServlet {
                 }
                 return;
             }
-            
+
             switch (path) {
                 case "/create": {
                     String name = req.getParameter("name");
@@ -146,7 +170,7 @@ public class PlaylistController extends HttpServlet {
                 case "/addSong": {
                     resp.setContentType("application/json");
                     resp.setCharacterEncoding("UTF-8");
-                    
+
                     int playlistId = Integer.parseInt(req.getParameter("playlistId"));
                     int songId = Integer.parseInt(req.getParameter("songId"));
                     playlistBO.addSong(playlistId, songId, user.getId());
@@ -156,7 +180,7 @@ public class PlaylistController extends HttpServlet {
                 case "/removeSong": {
                     resp.setContentType("application/json");
                     resp.setCharacterEncoding("UTF-8");
-                    
+
                     int playlistId = Integer.parseInt(req.getParameter("playlistId"));
                     int songId = Integer.parseInt(req.getParameter("songId"));
                     playlistBO.removeSong(playlistId, songId, user.getId());

@@ -2,9 +2,10 @@ package model.bo;
 
 import java.sql.SQLException;
 import java.util.List;
+
 import model.bean.Playlist;
-import model.bean.Song;
 import model.bean.PlaylistStat;
+import model.bean.Song;
 import model.dao.PlaylistDAO;
 
 public class PlaylistBO {

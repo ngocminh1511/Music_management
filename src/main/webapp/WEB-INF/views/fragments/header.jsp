@@ -7,8 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${param.pageTitle != null ? param.pageTitle : 'GenZ Beats - Âm nhạc cho thế hệ mới'}</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="${ctx}/assets/css/index_css.css">
     <link rel="stylesheet" href="${ctx}/assets/css/common.css">
+    <script>window.APP_CONTEXT='${ctx}';</script>
+    <!-- <script src="${ctx}/assets/js/ui-utils.js"></script> -->
 </head>
 <body>
     <header class="header" id="header">
@@ -29,22 +32,43 @@
             
             
             <ul class="nav-menu" id="navMenu">
-                <li><a href="${ctx}/" class="nav-link" title="Trang chủ">🏠</a></li>
+                <li><a href="${ctx}/" class="nav-link home-icon" title="Trang chủ"><i class='bx bx-home-alt'></i></a></li>
                 <div class="search-container">
                     <form action="${ctx}/home" method="get" class="search-form">
                         <input type="text" name="q" class="search-input" placeholder="Tìm kiếm bài hát, ca sĩ..." value="${param.q}">
-                        <button type="submit" class="search-btn">🔍</button>
+                        <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                     </form>
                 </div>
                 <li><a href="${ctx}/home" class="nav-link">Khám phá</a></li>
                 <c:choose>
                     <c:when test="${not empty sessionScope.user}">
+                        <!-- Admin Link for Admin Users -->
                         <c:if test="${sessionScope.user.role == 'ADMIN'}">
-                            <li><a href="${ctx}/admin/" class="nav-link">Quản trị</a></li>
+                            <li><a href="${ctx}/admin/" class="nav-link"><i class='bx bx-cog'></i> Quản trị</a></li>
                         </c:if>
-                        <li><a href="${ctx}/playlist/" class="nav-link">Playlist</a></li>
-                        <li><span class="nav-link" style="opacity:0.7;">Hi, ${sessionScope.user.username}</span></li>
-                        <li><a href="${ctx}/logout" class="nav-link">Đăng xuất</a></li>
+                        <!-- Avatar Dropdown -->
+                        <li class="user-dropdown">
+                            <div class="user-avatar" onclick="toggleUserMenu(event)">
+                                <c:choose>
+                                    <c:when test="${not empty sessionScope.user.avatar}">
+                                        <img src="${pageContext.request.contextPath}${sessionScope.user.avatar}" alt="${sessionScope.user.username}" onerror="this.src='${pageContext.request.contextPath}/assets/avatars/default.png'">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="${pageContext.request.contextPath}/assets/avatars/default.png" alt="${sessionScope.user.username}">
+                                    </c:otherwise>
+                                </c:choose>
+                                <span>${sessionScope.user.username}</span>
+                                <i class='bx bx-chevron-down'></i>
+                            </div>
+                            <div id="userDropdownMenu" class="dropdown-menu">
+                                <a href="javascript:void(0)" onclick="viewProfile()">
+                                    <i class='bx bx-user'></i> Hồ sơ
+                                </a>
+                                <a href="${ctx}/logout">
+                                    <i class='bx bx-log-out'></i> Đăng xuất
+                                </a>
+                            </div>
+                        </li>
                     </c:when>
                     <c:otherwise>
                         <li><a href="${ctx}/login" class="nav-link">Đăng nhập</a></li>

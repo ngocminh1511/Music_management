@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS songs (
   category_id INT,
   file_path VARCHAR(255),
   thumbnail VARCHAR(255),
+  lyrics TEXT COMMENT 'Song lyrics in plain text or LRC format',
   view_count INT DEFAULT 0,
   upload_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_title (title),

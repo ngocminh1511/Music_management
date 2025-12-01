@@ -11,6 +11,7 @@ public class Song {
     private String thumbnail;
     private int viewCount;
     private Date uploadDate;
+    private String lyrics;
 
     public Song() {}
 
@@ -30,4 +31,6 @@ public class Song {
     public void setViewCount(int viewCount) { this.viewCount = viewCount; }
     public Date getUploadDate() { return uploadDate; }
     public void setUploadDate(Date uploadDate) { this.uploadDate = uploadDate; }
+    public String getLyrics() { return lyrics; }
+    public void setLyrics(String lyrics) { this.lyrics = lyrics; }
 }

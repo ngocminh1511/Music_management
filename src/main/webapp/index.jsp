@@ -58,7 +58,7 @@
                 </div>
                 
                 <div class="pillar">
-                    <div class="pillar-icon">🔊</div>
+                    <div class="pillar-icon"><i class='bx bx-volume-full'></i></div>
                     <h3 class="pillar-title">EDM & Dance</h3>
                     <p class="pillar-description">
                         Năng lượng bùng nổ, bass mạnh mẽ — playlist hoàn hảo cho buổi tối cuối tuần và workout.
@@ -66,7 +66,7 @@
                 </div>
                 
                 <div class="pillar">
-                    <div class="pillar-icon">🎵</div>
+                    <div class="pillar-icon"><i class='bx bx-music'></i></div>
                     <h3 class="pillar-title">Lo-fi & Chill</h3>
                     <p class="pillar-description">
                         Nhạc nhẹ nhàng, mộc mạc cho học tập, làm việc và thư giãn — tạo không gian yên bình cho tâm hồn.
@@ -89,29 +89,29 @@
         
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">🎵</div>
+                <div class="stat-icon"><i class='bx bx-music'></i></div>
                 <div class="stat-number" data-target="5000">0</div>
                 <div class="stat-label">Bài hát</div>
                 <p class="stat-description">Kho nhạc khổng lồ từ V-POP, US-UK, EDM, Lo-fi đến Rap Việt — cập nhật liên tục.</p>
             </div>
             
             <div class="stat-card">
-                <div class="stat-icon">🎤</div>
+                <div class="stat-icon"><i class='bx bx-microphone'></i></div>
                 <div class="stat-number" data-target="500">0</div>
                 <div class="stat-label">Ca sĩ nổi tiếng</div>
                 <p class="stat-description">Theo dõi các nghệ sĩ yêu thích, khám phá bài hát mới từ họ mỗi ngày.</p>
             </div>
             
             <div class="stat-card">
-                <div class="stat-icon">🔥</div>
+                <div class="stat-icon"><i class='bx bxs-hot'></i></div>
                 <div class="stat-number" data-target="100">0</div>
                 <div class="stat-label">Playlist hot</div>
                 <p class="stat-description">Danh sách phát được tuyển chọn kỹ lưỡng cho mọi tâm trạng và hoạt động.</p>
             </div>
             
             <div class="stat-card">
-                <div class="stat-icon">👥</div>
-                <div class="stat-number" data-target="10000">0</div>
+                <div class="stat-icon"><i class='bx bx-group'></i></div>
+                <div class="stat-number" data-target="1000">0</div>
                 <div class="stat-label">Người dùng</div>
                 <p class="stat-description">Cộng đồng GenZ yêu nhạc đang phát triển mỗi ngày — tham gia ngay!</p>
             </div>

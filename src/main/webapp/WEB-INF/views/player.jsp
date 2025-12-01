@@ -219,7 +219,7 @@
     <!-- Playlist Queue -->
     <div class="playlist-sidebar">
         <div class="playlist-header">
-            🎵 ${playlistTitle}
+            <i class='bx bx-music'></i> ${playlistTitle}
             <span style="font-size: 0.9rem; color: var(--text-secondary);">(${playlist.size()} bài)</span>
         </div>
         

@@ -1,6 +1,11 @@
 package model.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import model.DBContext;
@@ -14,7 +19,9 @@ public class SongDAO {
             ps.setInt(1, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 List<Song> list = new ArrayList<>();
-                while (rs.next()) list.add(map(rs));
+                while (rs.next()) {
+					list.add(map(rs));
+				}
                 return list;
             }
         }
@@ -26,7 +33,9 @@ public class SongDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return map(rs);
+                if (rs.next()) {
+					return map(rs);
+				}
                 return null;
             }
         }
@@ -39,7 +48,9 @@ public class SongDAO {
             ps.setString(1, "%" + keyword + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 List<Song> list = new ArrayList<>();
-                while (rs.next()) list.add(map(rs));
+                while (rs.next()) {
+					list.add(map(rs));
+				}
                 return list;
             }
         }
@@ -60,7 +71,9 @@ public class SongDAO {
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             List<Song> list = new ArrayList<>();
-            while (rs.next()) list.add(map(rs));
+            while (rs.next()) {
+				list.add(map(rs));
+			}
             return list;
         }
     }
@@ -70,13 +83,23 @@ public class SongDAO {
         try (Connection con = DBContext.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, s.getTitle());
-            if (s.getSingerId() == null) ps.setNull(2, Types.INTEGER); else ps.setInt(2, s.getSingerId());
-            if (s.getCategoryId() == null) ps.setNull(3, Types.INTEGER); else ps.setInt(3, s.getCategoryId());
+            if (s.getSingerId() == null) {
+				ps.setNull(2, Types.INTEGER);
+			} else {
+				ps.setInt(2, s.getSingerId());
+			}
+            if (s.getCategoryId() == null) {
+				ps.setNull(3, Types.INTEGER);
+			} else {
+				ps.setInt(3, s.getCategoryId());
+			}
             ps.setString(4, s.getFilePath());
             ps.setString(5, s.getThumbnail());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (keys.next()) return keys.getInt(1);
+                if (keys.next()) {
+					return keys.getInt(1);
+				}
             }
             return 0;
         }
@@ -87,8 +110,16 @@ public class SongDAO {
         try (Connection con = DBContext.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, s.getTitle());
-            if (s.getSingerId() == null) ps.setNull(2, Types.INTEGER); else ps.setInt(2, s.getSingerId());
-            if (s.getCategoryId() == null) ps.setNull(3, Types.INTEGER); else ps.setInt(3, s.getCategoryId());
+            if (s.getSingerId() == null) {
+				ps.setNull(2, Types.INTEGER);
+			} else {
+				ps.setInt(2, s.getSingerId());
+			}
+            if (s.getCategoryId() == null) {
+				ps.setNull(3, Types.INTEGER);
+			} else {
+				ps.setInt(3, s.getCategoryId());
+			}
             ps.setString(4, s.getFilePath());
             ps.setString(5, s.getThumbnail());
             ps.setInt(6, s.getId());
@@ -133,7 +164,9 @@ public class SongDAO {
             ps.setInt(2, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 List<Song> list = new ArrayList<>();
-                while (rs.next()) list.add(map(rs));
+                while (rs.next()) {
+					list.add(map(rs));
+				}
                 return list;
             }
         }
@@ -146,7 +179,9 @@ public class SongDAO {
             ps.setInt(1, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 List<Song> list = new ArrayList<>();
-                while (rs.next()) list.add(map(rs));
+                while (rs.next()) {
+					list.add(map(rs));
+				}
                 return list;
             }
         }
@@ -160,7 +195,9 @@ public class SongDAO {
             ps.setInt(2, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 List<Song> list = new ArrayList<>();
-                while (rs.next()) list.add(map(rs));
+                while (rs.next()) {
+					list.add(map(rs));
+				}
                 return list;
             }
         }
@@ -174,7 +211,9 @@ public class SongDAO {
             ps.setString(1, startDate);
             ps.setString(2, endDate);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return rs.getLong(1);
+                if (rs.next()) {
+					return rs.getLong(1);
+				}
                 return 0;
             }
         }
@@ -187,7 +226,9 @@ public class SongDAO {
             ps.setString(1, startDate);
             ps.setString(2, endDate);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return rs.getInt(1);
+                if (rs.next()) {
+					return rs.getInt(1);
+				}
                 return 0;
             }
         }
@@ -223,7 +264,9 @@ public class SongDAO {
             ps.setInt(3, limit);
             try (ResultSet rs = ps.executeQuery()) {
                 List<Song> list = new ArrayList<>();
-                while (rs.next()) list.add(map(rs));
+                while (rs.next()) {
+					list.add(map(rs));
+				}
                 return list;
             }
         }
@@ -237,6 +280,7 @@ public class SongDAO {
         s.setCategoryId((Integer) rs.getObject("category_id"));
         s.setFilePath(rs.getString("file_path"));
         s.setThumbnail(rs.getString("thumbnail"));
+        s.setLyrics(rs.getString("lyrics"));
         s.setViewCount(rs.getInt("view_count"));
         s.setUploadDate(rs.getTimestamp("upload_date"));
         return s;

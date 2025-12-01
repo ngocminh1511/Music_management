@@ -7,13 +7,13 @@
 <div class="admin-page">
   <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="text-white mb-0">👥 Quản lý Người dùng</h2>
+      <h2 class="text-white mb-0"><i class='bx bx-group'></i> Quản lý Người dùng</h2>
     </div>
 
     <!-- Live Search & Filter -->
     <div class="filter-bar">
       <div class="live-search-container" style="flex: 1;">
-        <div class="live-search-icon">🔍</div>
+        <div class="live-search-icon"><i class='bx bx-search'></i></div>
         <input type="text" id="searchInput" class="live-search-input" placeholder="Tìm kiếm username, email..." onkeyup="filterTable()">
       </div>
       <div class="filter-group">
@@ -73,7 +73,7 @@
                 <form class="d-inline" method="post" action="${pageContext.request.contextPath}/admin/users/delete" onsubmit="return confirm('Xoá tài khoản này?')">
                   <input type="hidden" name="id" value="${u.id}">
                   <button type="submit" class="btn btn-danger btn-sm" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
-                    🗑️ Xoá
+                    <i class='bx bx-trash'></i> Xoá
                   </button>
                 </form>
               </td>

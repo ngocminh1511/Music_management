@@ -1,8 +1,13 @@
 package model.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import model.DBContext;
 import model.bean.Playlist;
 import model.bean.PlaylistStat;
@@ -72,7 +77,9 @@ public class PlaylistDAO {
             ps.setString(2, name);
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (keys.next()) return keys.getInt(1);
+                if (keys.next()) {
+					return keys.getInt(1);
+				}
             }
             return 0;
         }
@@ -108,7 +115,9 @@ public class PlaylistDAO {
             c.setInt(1, playlistId);
             c.setInt(2, userId);
             try (ResultSet rs = c.executeQuery()) {
-                if (!rs.next()) return;
+                if (!rs.next()) {
+					return;
+				}
             }
         }
         String sql = "INSERT IGNORE INTO playlist_song(playlist_id, song_id) VALUES(?,?)";

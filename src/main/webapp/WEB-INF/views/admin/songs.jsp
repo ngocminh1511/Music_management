@@ -7,16 +7,16 @@
 <div class="admin-page">
   <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="text-white mb-0">🎵 Quản lý Bài hát</h2>
+      <h2 class="text-white mb-0"><i class='bx bx-music'></i> Quản lý Bài hát</h2>
       <button class="btn btn-primary" onclick="openCreateSongModal()">
-        ➕ Thêm bài hát
+        <i class='bx bx-plus-circle'></i> Thêm bài hát
       </button>
     </div>
 
     <!-- Live Search & Filter -->
     <div class="filter-bar">
       <div class="live-search-container" style="flex: 1;">
-        <div class="live-search-icon">🔍</div>
+        <div class="live-search-icon"><i class='bx bx-search'></i></div>
         <input type="text" id="searchInput" class="live-search-input" placeholder="Tìm kiếm bài hát..." onkeyup="filterTable()">
       </div>
       <div class="filter-group">
@@ -88,12 +88,12 @@
               </td>
               <td>
                 <button class="btn btn-secondary btn-sm" onclick="openEditSongModal(this)" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
-                  ✏️ Sửa
+                  <i class='bx bx-edit-alt'></i> Sửa
                 </button>
                 <form class="d-inline" method="post" action="${pageContext.request.contextPath}/admin/songs/delete" onsubmit="return confirm('Xoá bài hát này?')">
                   <input type="hidden" name="id" value="${s.id}">
                   <button type="submit" class="btn btn-danger btn-sm" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
-                    🗑️ Xoá
+                    <i class='bx bx-trash'></i> Xoá
                   </button>
                 </form>
               </td>

@@ -1,10 +1,15 @@
 package model.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 import model.DBContext;
 import model.bean.User;
 
@@ -15,7 +20,9 @@ public class UserDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, username);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return map(rs);
+                if (rs.next()) {
+					return map(rs);
+				}
                 return null;
             }
         }
@@ -27,7 +34,9 @@ public class UserDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return map(rs);
+                if (rs.next()) {
+					return map(rs);
+				}
                 return null;
             }
         }
@@ -43,7 +52,9 @@ public class UserDAO {
             ps.setString(4, u.getRole() == null ? "USER" : u.getRole());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (keys.next()) return keys.getInt(1);
+                if (keys.next()) {
+					return keys.getInt(1);
+				}
                 return 0;
             }
         }
@@ -55,7 +66,9 @@ public class UserDAO {
         try (Connection con = DBContext.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) return rs.getInt(1);
+            if (rs.next()) {
+				return rs.getInt(1);
+			}
             return 0;
         }
     }
@@ -67,7 +80,9 @@ public class UserDAO {
         try (Connection con = DBContext.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) return rs.getInt(1);
+            if (rs.next()) {
+				return rs.getInt(1);
+			}
             return 0;
         }
     }
@@ -94,6 +109,21 @@ public class UserDAO {
         return result;
     }
 
+    public boolean updateProfile(int userId, String username, String email, String bio, String avatarPath) throws SQLException {
+        String sql = "UPDATE users SET username = ?, email = ?, bio = ?, avatar = ? WHERE id = ?";
+        try (Connection con = DBContext.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, email);
+            ps.setString(3, bio);
+            ps.setString(4, avatarPath);
+            ps.setInt(5, userId);
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        }
+    }
+
     private User map(ResultSet rs) throws SQLException {
         User u = new User();
         u.setId(rs.getInt("id"));
@@ -101,6 +131,13 @@ public class UserDAO {
         u.setPassword(rs.getString("password"));
         u.setEmail(rs.getString("email"));
         u.setRole(rs.getString("role"));
+        u.setAvatar(rs.getString("avatar"));
+        u.setBio(rs.getString("bio"));
+        try {
+            u.setCreatedAt(rs.getTimestamp("created_at"));
+        } catch (SQLException e) {
+            // Column might not exist in older schema
+        }
         return u;
     }
 }

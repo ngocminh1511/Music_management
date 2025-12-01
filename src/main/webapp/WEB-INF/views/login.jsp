@@ -125,7 +125,7 @@
 <div class="auth-container">
     <div class="auth-card">
         <div class="auth-logo">
-            <h1>🎵 GenZ Beats</h1>
+            <h1><i class='bx bxs-music'></i> GenZ Beats</h1>
             <p>Chào mừng bạn trở lại!</p>
         </div>
         
@@ -135,12 +135,12 @@
         
         <form method="post" action="${pageContext.request.contextPath}/login">
             <div class="form-group">
-                <label for="username">👤 Tên đăng nhập</label>
+                <label for="username"><i class='bx bx-user'></i> Tên đăng nhập</label>
                 <input type="text" id="username" name="username" class="form-control" placeholder="Nhập username" required autofocus>
             </div>
             
             <div class="form-group">
-                <label for="password">🔒 Mật khẩu</label>
+                <label for="password"><i class='bx bx-lock-alt'></i> Mật khẩu</label>
                 <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
             </div>
             

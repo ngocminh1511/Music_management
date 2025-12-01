@@ -16,8 +16,9 @@
 /* Fix header overlap */
 .admin-dashboard,
 .admin-page {
-  padding-top: 100px !important;
-  min-height: 100vh;
+  padding-top: 80px !important;
+  min-height: calc(100vh - 80px);
+  background: var(--admin-bg);
 }
 
 /* Dynamic Stat Cards with Counter Animation */

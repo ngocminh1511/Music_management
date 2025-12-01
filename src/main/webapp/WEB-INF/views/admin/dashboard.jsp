@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<jsp:include page="../fragments/header.jsp" />
+<%@ include file="../fragments/header.jsp" %>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin.css">
 <style>
@@ -143,7 +143,7 @@
 
 <div class="admin-dashboard">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-white mb-0">📊 Bảng điều khiển quản trị</h2>
+    <h2 class="text-white mb-0"><i class='bx bx-bar-chart-alt-2'></i> Bảng điều khiển quản trị</h2>
     <div>
       <a class="btn btn-primary me-2" href="${pageContext.request.contextPath}/admin/songs">🎵 Bài hát</a>
       <a class="btn btn-primary me-2" href="${pageContext.request.contextPath}/admin/singers">🎤 Ca sĩ</a>
@@ -154,7 +154,7 @@
 
   <!-- Bộ lọc thời gian -->
   <div class="filter-section">
-    <h5>🔍 Lọc theo thời gian</h5>
+    <h5><i class='bx bx-filter'></i> Lọc theo thời gian</h5>
     <div class="filter-buttons">
       <button class="filter-btn active" data-period="day" onclick="setPeriod('day')">Hôm nay</button>
       <button class="filter-btn" data-period="week" onclick="setPeriod('week')">Tuần này</button>
@@ -272,16 +272,16 @@
     <!-- Top bài hát trong khoảng thời gian -->
     <div class="col-lg-6">
       <div class="top-list">
-        <h6>🎵 Top bài hát nhiều lượt nghe (khoảng thời gian)</h6>
+        <h6><i class='bx bx-music'></i> Top bài hát nhiều lượt nghe (khoảng thời gian)</h6>
         <div id="topSongsList" class="loading">Đang tải...</div>
       </div>
     </div>
 
     <!-- Top nghệ sĩ & Top playlist -->
-    <div class="col-lg-3">
+    <div class="col-lg-6">
       <div class="top-list">
-        <h6>⭐ Top nghệ sĩ nổi bật</h6>
-        <div id="topSingersList" class="loading">Đang tải...</div>
+        <h6><i class='bx bxs-star'></i> Top nghệ sĩ nổi bật</h6>
+        <div id="topArtistsList" class="loading">Đang tải...</div>
       </div>
     </div>
     <div class="col-lg-3">
@@ -315,6 +315,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>window.APP_CONTEXT = '${pageContext.request.contextPath}';</script>
+<script src="${pageContext.request.contextPath}/assets/js/ui-utils.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/admin-dashboard.js"></script>
 <script>
 var ctxPath = '${pageContext.request.contextPath}';
@@ -420,11 +422,15 @@ function loadDynamicStats() {
 
 // Cập nhật biểu đồ theo tháng
 function updateMonthlyChart(data) {
-  var ctx = document.getElementById('monthlyChart').getContext('2d');
+  var canvas = document.getElementById('monthlyChart');
   
-  if (monthlyChart) {
-    monthlyChart.destroy();
+  // Properly destroy existing chart using Chart.js API
+  var existingChart = Chart.getChart(canvas);
+  if (existingChart) {
+    existingChart.destroy();
   }
+  
+  var ctx = canvas.getContext('2d');
   
   var monthNames = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
   var labels = [];

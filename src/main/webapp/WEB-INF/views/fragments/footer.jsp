@@ -43,8 +43,8 @@
                 <div class="footer-links">
                     <c:choose>
                         <c:when test="${not empty sessionScope.user}">
-                            <a href="${ctx}/playlist/">Playlist của tôi</a>
-                            <a href="${ctx}/logout">Đăng xuất</a>
+                            <a href="javascript:viewDiscover()">Trang chủ</a>
+                            <a href="javascript:void(0)" onclick="if(window.playlistManager) playlistManager.loadPlaylists()">Playlist của tôi</a>
                         </c:when>
                         <c:otherwise>
                             <a href="${ctx}/login">Đăng nhập</a>

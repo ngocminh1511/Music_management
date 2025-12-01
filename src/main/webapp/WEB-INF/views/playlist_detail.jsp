@@ -9,19 +9,25 @@
 .playlist-header-section {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1.5rem;
-    margin-bottom: 2rem;
-    background: var(--bg-card);
-    padding: 2rem;
-    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, rgba(122, 92, 255, 0.15) 0%, rgba(0, 194, 255, 0.1) 100%);
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(122, 92, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 .playlist-title-input {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 700;
     background: transparent;
     border: none;
     border-bottom: 2px solid transparent;
-    color: var(--accent-purple);
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     padding: 0.5rem 0;
     transition: all 0.3s;
     flex: 1;
@@ -58,15 +64,35 @@
 }
 .songs-list {
     flex: 1;
+    min-width: 0;
+}
+
+.songs-section {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(122, 92, 255, 0.1);
+}
+
+.songs-section h3 {
+    color: var(--accent-purple);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 .search-panel {
-    width: 400px;
-    background: var(--bg-card);
-    border-radius: 15px;
+    width: 380px;
+    background: linear-gradient(135deg, rgba(26, 26, 27, 0.95) 0%, rgba(10, 10, 11, 0.95) 100%);
+    border-radius: 12px;
     padding: 1.5rem;
     height: fit-content;
     position: sticky;
     top: 100px;
+    border: 1px solid rgba(122, 92, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 .search-box {
     display: flex;
@@ -184,8 +210,8 @@
         
         <div class="playlist-actions">
             <button class="btn-icon btn-delete-playlist" 
-                    onclick="deletePlaylist(${playlist.id})" 
-                    title="Xóa playlist">🗑️</button>
+                    onclick="deletePlaylist(${playlist.id})"
+                    title="Xóa playlist"><i class='bx bx-trash'></i></button>
         </div>
     </div>
 
@@ -193,17 +219,19 @@
     <div class="content-wrapper">
         <!-- Songs List -->
         <div class="songs-list">
-            <h4 style="color: var(--text-primary); margin-bottom: 1rem;">
-                📀 Danh sách bài hát (<span id="songCount">${songs.size()}</span>)
-            </h4>
+            <div class="songs-section">
+                <h3>
+                    <i class='bx bx-music'></i> 
+                    Danh sách bài hát (<span id="songCount">${songs.size()}</span>)
+                </h3>
             
-            <div id="playlistSongsList">
+                <div id="playlistSongsList">
                 <c:forEach var="song" items="${songs}">
                     <div class="song-item" id="song-${song.id}">
                         <img src="${pageContext.request.contextPath}${song.thumbnail}" 
                              alt="${song.title}" 
                              class="song-thumb"
-                             onerror="this.src='${pageContext.request.contextPath}/assets/thumbs/default.jpg'">
+                             onerror="this.src='${pageContext.request.contextPath}/assets/thumbs/default.png'">
                         <div class="song-info">
                             <div class="song-title">${song.title}</div>
                             <div class="song-meta">
@@ -219,18 +247,21 @@
                         </button>
                     </div>
                 </c:forEach>
-            </div>
+                </div>
             
-            <c:if test="${empty songs}">
-                <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
-                    Playlist trống. Tìm kiếm và thêm bài hát từ bên phải ➡️
-                </p>
-            </c:if>
+                <c:if test="${empty songs}">
+                    <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
+                        Playlist trống. Tìm kiếm và thêm bài hát từ bên phải ➡️
+                    </p>
+                </c:if>
+            </div>
         </div>
 
         <!-- Search Panel -->
         <div class="search-panel">
-            <h5 style="color: var(--accent-purple); margin-bottom: 1rem;">🔍 Tìm bài hát</h5>
+            <h5 style="color: var(--accent-purple); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class='bx bx-search'></i> Tìm bài hát
+            </h5>
             
             <div class="search-box">
                 <input type="text" 
@@ -251,7 +282,7 @@
                             <img src="${pageContext.request.contextPath}${song.thumbnail}" 
                                  alt="${song.title}" 
                                  class="song-thumb"
-                                 onerror="this.src='${pageContext.request.contextPath}/assets/thumbs/default.jpg'">
+                                 onerror="this.src='${pageContext.request.contextPath}/assets/thumbs/default.png'">
                             <div class="song-info">
                                 <div class="song-title">${song.title}</div>
                                 <div class="song-meta">

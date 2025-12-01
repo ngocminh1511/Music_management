@@ -1,15 +1,8 @@
 package controller;
 
-import model.bean.Category;
-import model.bean.Singer;
-import model.bean.Song;
-import model.bo.CategoryBO;
-import model.bo.SingerBO;
-import model.bo.SongBO;
-import model.bo.UserBO;
-import model.bo.PlaylistBO;
-import model.DBContext;
-import model.util.FileUploadUtil;
+import java.io.IOException;
+import java.sql.Connection;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -17,9 +10,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.List;
+
+import model.DBContext;
+import model.bean.Category;
+import model.bean.Singer;
+import model.bean.Song;
+import model.bo.CategoryBO;
+import model.bo.PlaylistBO;
+import model.bo.SingerBO;
+import model.bo.SongBO;
+import model.bo.UserBO;
+import model.util.FileUploadUtil;
 
 @MultipartConfig(maxFileSize = 20 * 1024 * 1024)
 public class AdminController extends HttpServlet {
@@ -48,21 +49,22 @@ public class AdminController extends HttpServlet {
         try {
             switch (path) {
                 case "/api/stats": {
-                    resp.setContentType("application/json;charset=UTF-8");
-                    int cSongs = songBO.count();
-                    int cSingers = singerBO.count();
-                    int cCategories = categoryBO.count();
-                    long views = songBO.sumViews();
-                    int cPlaylists = playlistBO.count();
+                    try {
+                        resp.setContentType("application/json;charset=UTF-8");
+                        int cSongs = songBO.count();
+                        int cSingers = singerBO.count();
+                        int cCategories = categoryBO.count();
+                        long views = songBO.sumViews();
+                        int cPlaylists = playlistBO.count();
 
-                    // top bài hát theo lượt nghe
-                    List<Song> topSongs = songBO.getTopByViews(7);
+                        // top bài hát theo lượt nghe
+                        List<Song> topSongs = songBO.getTopByViews(7);
 
-                    // top nghệ sĩ theo lượt nghe (đã có sẵn trong SingerBO)
-                    List<model.bean.Singer> topSingers = singerBO.getTopSingers(5);
+                        // top nghệ sĩ theo lượt nghe (đã có sẵn trong SingerBO)
+                        List<model.bean.Singer> topSingers = singerBO.getTopSingers(5);
 
-                    // top playlist theo số lượng bài hát
-                    List<model.bean.PlaylistStat> topPlaylists = playlistBO.topBySongCount(5);
+                        // top playlist theo số lượng bài hát
+                        List<model.bean.PlaylistStat> topPlaylists = playlistBO.topBySongCount(5);
 
                     StringBuilder sb = new StringBuilder();
                     sb.append('{')
@@ -76,7 +78,9 @@ public class AdminController extends HttpServlet {
                     sb.append("\"topSongs\":[");
                     for (int i = 0; i < topSongs.size(); i++) {
                         Song s = topSongs.get(i);
-                        if (i > 0) sb.append(',');
+                        if (i > 0) {
+							sb.append(',');
+						}
                         sb.append('{')
                                 .append("\"title\":\"").append(s.getTitle().replace("\"", "\\\"")).append("\",")
                                 .append("\"views\":").append(s.getViewCount())
@@ -88,7 +92,9 @@ public class AdminController extends HttpServlet {
                     sb.append("\"topSingers\":[");
                     for (int i = 0; i < topSingers.size(); i++) {
                         model.bean.Singer s = topSingers.get(i);
-                        if (i > 0) sb.append(',');
+                        if (i > 0) {
+							sb.append(',');
+						}
                         sb.append('{')
                                 .append("\"name\":\"").append(s.getName().replace("\"", "\\\"")).append("\"")
                                 .append('}');
@@ -99,7 +105,9 @@ public class AdminController extends HttpServlet {
                     sb.append("\"topPlaylists\":[");
                     for (int i = 0; i < topPlaylists.size(); i++) {
                         model.bean.PlaylistStat p = topPlaylists.get(i);
-                        if (i > 0) sb.append(',');
+                        if (i > 0) {
+							sb.append(',');
+						}
                         sb.append('{')
                                 .append("\"name\":\"").append(p.getName().replace("\"", "\\\"")).append("\",")
                                 .append("\"songCount\":").append(p.getSongCount())
@@ -109,6 +117,11 @@ public class AdminController extends HttpServlet {
 
                     sb.append('}');
                     resp.getWriter().write(sb.toString());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        resp.setContentType("application/json;charset=UTF-8");
+                        resp.getWriter().write("{\"error\":\"Internal server error\"}");
+                    }
                     break;
                 }
                 case "/api/stats/dynamic": {
@@ -121,7 +134,7 @@ public class AdminController extends HttpServlet {
                     // Tính toán startDate và endDate dựa trên period
                     java.util.Calendar cal = java.util.Calendar.getInstance();
                     java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-                    
+
                     if (period != null) {
                         switch (period) {
                             case "day":
@@ -158,12 +171,18 @@ public class AdminController extends HttpServlet {
                         }
                     }
 
-                    if (startDate == null) startDate = sdf.format(new java.util.Date());
-                    if (endDate == null) endDate = sdf.format(new java.util.Date());
+                    if (startDate == null) {
+						startDate = sdf.format(new java.util.Date());
+					}
+                    if (endDate == null) {
+						endDate = sdf.format(new java.util.Date());
+					}
 
                     String statType = req.getParameter("statType");
-                    if (statType == null) statType = "views";
-                    
+                    if (statType == null) {
+						statType = "views";
+					}
+
                     // Lấy dữ liệu theo khoảng thời gian
                     long viewsInRange = songBO.sumViewsByDateRange(startDate + " 00:00:00", endDate + " 23:59:59");
                     int songsInRange = songBO.countByDateRange(startDate + " 00:00:00", endDate + " 23:59:59");
@@ -171,7 +190,7 @@ public class AdminController extends HttpServlet {
                     List<java.util.Map<String, Object>> viewsByMonth = songBO.getViewsByMonth(year);
                     List<java.util.Map<String, Object>> topUsers = userBO.getTopUsersByPlaylistCount(5);
                     int newUsers = userBO.countNewUsers();
-                    
+
                     // Dữ liệu theo ca sĩ
                     List<java.util.Map<String, Object>> singersData = new java.util.ArrayList<>();
                     if ("viewsBySinger".equals(statType) || "singerComparison".equals(statType)) {
@@ -187,9 +206,11 @@ public class AdminController extends HttpServlet {
                             singersData.add(map);
                         }
                         singersData.sort((a, b) -> Long.compare((Long)b.get("views"), (Long)a.get("views")));
-                        if (singersData.size() > 10) singersData = singersData.subList(0, 10);
+                        if (singersData.size() > 10) {
+							singersData = singersData.subList(0, 10);
+						}
                     }
-                    
+
                     // Dữ liệu theo thể loại
                     List<java.util.Map<String, Object>> categoriesData = new java.util.ArrayList<>();
                     if ("viewsByCategory".equals(statType) || "categoryDistribution".equals(statType)) {
@@ -207,29 +228,29 @@ public class AdminController extends HttpServlet {
                         }
                         categoriesData.sort((a, b) -> Long.compare((Long)b.get("views"), (Long)a.get("views")));
                     }
-                    
+
                     // Dữ liệu so sánh tháng
                     List<java.util.Map<String, Object>> comparisonData = new java.util.ArrayList<>();
                     if ("monthComparison".equals(statType)) {
                         java.util.Calendar calNow = java.util.Calendar.getInstance();
                         int currentMonth = calNow.get(java.util.Calendar.MONTH) + 1;
                         int currentYear = calNow.get(java.util.Calendar.YEAR);
-                        
+
                         calNow.set(java.util.Calendar.MONTH, currentMonth - 1);
                         calNow.set(java.util.Calendar.DAY_OF_MONTH, 1);
                         String thisMonthStart = sdf.format(calNow.getTime());
                         calNow.set(java.util.Calendar.DAY_OF_MONTH, calNow.getActualMaximum(java.util.Calendar.DAY_OF_MONTH));
                         String thisMonthEnd = sdf.format(calNow.getTime());
-                        
+
                         calNow.add(java.util.Calendar.MONTH, -1);
                         calNow.set(java.util.Calendar.DAY_OF_MONTH, 1);
                         String lastMonthStart = sdf.format(calNow.getTime());
                         calNow.set(java.util.Calendar.DAY_OF_MONTH, calNow.getActualMaximum(java.util.Calendar.DAY_OF_MONTH));
                         String lastMonthEnd = sdf.format(calNow.getTime());
-                        
+
                         long thisMonthViews = songBO.sumViewsByDateRange(thisMonthStart + " 00:00:00", thisMonthEnd + " 23:59:59");
                         long lastMonthViews = songBO.sumViewsByDateRange(lastMonthStart + " 00:00:00", lastMonthEnd + " 23:59:59");
-                        
+
                         java.util.Map<String, Object> comp = new java.util.HashMap<>();
                         comp.put("label", "Tháng " + currentMonth);
                         comp.put("current", thisMonthViews);
@@ -252,7 +273,9 @@ public class AdminController extends HttpServlet {
                     sb.append("\"topSongsInRange\":[");
                     for (int i = 0; i < topSongsInRange.size(); i++) {
                         Song s = topSongsInRange.get(i);
-                        if (i > 0) sb.append(',');
+                        if (i > 0) {
+							sb.append(',');
+						}
                         sb.append('{')
                                 .append("\"title\":\"").append(s.getTitle().replace("\"", "\\\"")).append("\",")
                                 .append("\"views\":").append(s.getViewCount())
@@ -264,7 +287,9 @@ public class AdminController extends HttpServlet {
                     sb.append("\"viewsByMonth\":[");
                     for (int i = 0; i < viewsByMonth.size(); i++) {
                         java.util.Map<String, Object> m = viewsByMonth.get(i);
-                        if (i > 0) sb.append(',');
+                        if (i > 0) {
+							sb.append(',');
+						}
                         sb.append('{')
                                 .append("\"month\":").append(m.get("month")).append(',')
                                 .append("\"views\":").append(m.get("views"))
@@ -276,19 +301,23 @@ public class AdminController extends HttpServlet {
                     sb.append("\"topUsers\":[");
                     for (int i = 0; i < topUsers.size(); i++) {
                         java.util.Map<String, Object> u = topUsers.get(i);
-                        if (i > 0) sb.append(',');
+                        if (i > 0) {
+							sb.append(',');
+						}
                         sb.append('{')
                                 .append("\"username\":\"").append(u.get("username").toString().replace("\"", "\\\"")).append("\",")
                                 .append("\"playlistCount\":").append(u.get("playlistCount"))
                                 .append('}');
                     }
                     sb.append("],");
-                    
+
                     // Singers data
                     sb.append("\"singersData\":[");
                     for (int i = 0; i < singersData.size(); i++) {
                         java.util.Map<String, Object> s = singersData.get(i);
-                        if (i > 0) sb.append(',');
+                        if (i > 0) {
+							sb.append(',');
+						}
                         sb.append('{')
                                 .append("\"singerId\":").append(s.get("singerId")).append(',')
                                 .append("\"name\":\"").append(s.get("name").toString().replace("\"", "\\\"")).append("\",")
@@ -298,12 +327,14 @@ public class AdminController extends HttpServlet {
                                 .append('}');
                     }
                     sb.append("],");
-                    
+
                     // Categories data
                     sb.append("\"categoriesData\":[");
                     for (int i = 0; i < categoriesData.size(); i++) {
                         java.util.Map<String, Object> c = categoriesData.get(i);
-                        if (i > 0) sb.append(',');
+                        if (i > 0) {
+							sb.append(',');
+						}
                         sb.append('{')
                                 .append("\"categoryId\":").append(c.get("categoryId")).append(',')
                                 .append("\"name\":\"").append(c.get("name").toString().replace("\"", "\\\"")).append("\",")
@@ -313,12 +344,14 @@ public class AdminController extends HttpServlet {
                                 .append('}');
                     }
                     sb.append("],");
-                    
+
                     // Comparison data
                     sb.append("\"comparisonData\":[");
                     for (int i = 0; i < comparisonData.size(); i++) {
                         java.util.Map<String, Object> comp = comparisonData.get(i);
-                        if (i > 0) sb.append(',');
+                        if (i > 0) {
+							sb.append(',');
+						}
                         sb.append('{')
                                 .append("\"label\":\"").append(comp.get("label").toString().replace("\"", "\\\"")).append("\",")
                                 .append("\"current\":").append(comp.get("current")).append(',')
@@ -400,8 +433,12 @@ public class AdminController extends HttpServlet {
                     Part thumb = req.getPart("thumb");
                     String filePath = FileUploadUtil.save(audio, "music", getServletContext());
                     String thumbnail = FileUploadUtil.save(thumb, "thumbs", getServletContext());
-                    if (filePath != null) cur.setFilePath(filePath);
-                    if (thumbnail != null) cur.setThumbnail(thumbnail);
+                    if (filePath != null) {
+						cur.setFilePath(filePath);
+					}
+                    if (thumbnail != null) {
+						cur.setThumbnail(thumbnail);
+					}
                     songBO.update(cur);
                     resp.sendRedirect(req.getContextPath() + "/admin/songs");
                     break;
@@ -432,7 +469,9 @@ public class AdminController extends HttpServlet {
                     s.setDescription(req.getParameter("description"));
                     Part av = req.getPart("avatar");
                     String avatar = FileUploadUtil.save(av, "avatars", getServletContext());
-                    if (avatar != null) s.setAvatar(avatar);
+                    if (avatar != null) {
+						s.setAvatar(avatar);
+					}
                     singerBO.update(s);
                     resp.sendRedirect(req.getContextPath() + "/admin/singers");
                     break;
@@ -491,7 +530,9 @@ public class AdminController extends HttpServlet {
 
     private Integer parseInt(String s) {
         try {
-            if (s == null || s.isEmpty()) return null;
+            if (s == null || s.isEmpty()) {
+				return null;
+			}
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
             return null;

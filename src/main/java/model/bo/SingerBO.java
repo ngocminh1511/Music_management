@@ -2,6 +2,7 @@ package model.bo;
 
 import java.sql.SQLException;
 import java.util.List;
+
 import model.bean.Singer;
 import model.dao.SingerDAO;
 

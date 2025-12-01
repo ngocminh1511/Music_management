@@ -1,14 +1,15 @@
 package controller;
 
-import model.dao.UserDAO;
-import model.bean.User;
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
+
+import model.bean.User;
+import model.dao.UserDAO;
 
 public class AuthController extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
@@ -18,7 +19,9 @@ public class AuthController extends HttpServlet {
         String path = req.getServletPath();
         if ("/logout".equals(path)) {
             HttpSession session = req.getSession(false);
-            if (session != null) session.invalidate();
+            if (session != null) {
+				session.invalidate();
+			}
             resp.sendRedirect(req.getContextPath() + "/");
             return;
         }
