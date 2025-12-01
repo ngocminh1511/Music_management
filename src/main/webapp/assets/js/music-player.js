@@ -284,6 +284,7 @@ class MusicPlayer {
         // Update player bar display at bottom
         const display = document.getElementById('currentSongDisplay');
         if (display) {
+            const ctx = window.APP_CONTEXT || '';
             display.innerHTML = `
                 <img src="${thumbnail}" alt="${song.title || 'Song'}" onerror="this.src='${ctx}/assets/thumbs/default.png'">
                 <div class="song-text">
@@ -297,12 +298,25 @@ class MusicPlayer {
         // Update category sidebar display (if exists)
         const categorySongDisplay = document.getElementById('categorySongDisplay');
         if (categorySongDisplay) {
+            const ctx = window.APP_CONTEXT || '';
             categorySongDisplay.innerHTML = `
                 <img src="${thumbnail}" alt="${song.title}" onerror="this.src='${ctx}/assets/thumbs/default.png'">
                 <h4>${song.title || 'Unknown'}</h4>
                 <p>${song.artist || 'Unknown Artist'}</p>
             `;
             console.log('[Player] Category sidebar updated');
+        }
+
+        // Update playlist sidebar display (if exists)
+        const nowPlayingDisplay = document.getElementById('nowPlayingDisplay');
+        if (nowPlayingDisplay) {
+            const ctx = window.APP_CONTEXT || '';
+            nowPlayingDisplay.innerHTML = `
+                <img src="${thumbnail}" alt="${song.title}" onerror="this.src='${ctx}/assets/thumbs/default.png'">
+                <h4>${song.title || 'Unknown'}</h4>
+                <p>${song.artist || 'Unknown Artist'}</p>
+            `;
+            console.log('[Player] Playlist sidebar updated');
         }
         
         // Update lyrics panel title

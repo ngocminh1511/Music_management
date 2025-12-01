@@ -18,8 +18,17 @@
     margin-bottom: 1.5rem;
     border: 1px solid rgba(122, 92, 255, 0.2);
     display: flex;
-    justify-content: space-between;
+    gap: 1.5rem;
     align-items: center;
+}
+
+.category-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
 }
 
 .category-header h1 {
@@ -121,24 +130,23 @@
 }
 
 .category-sidebar {
-    flex: 4;
+    flex: 0 0 350px;
     position: sticky;
     top: 100px;
     height: fit-content;
-    background: rgba(26, 26, 27, 0.6);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid rgba(122, 92, 255, 0.2);
 }
 
 .current-song-display {
     text-align: center;
     padding: 2rem 1rem;
+    background: rgba(26, 26, 27, 0.6);
+    border-radius: 12px;
+    border: 1px solid rgba(122, 92, 255, 0.2);
+    margin-bottom: 1rem;
 }
 
 .current-song-display img {
     width: 100%;
-    max-width: 300px;
     border-radius: 12px;
     margin-bottom: 1rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -159,6 +167,12 @@
     <!-- Main Content (60%): Song List -->
     <div class="category-content">
         <div class="category-header">
+            <c:if test="${not empty category.thumbnail}">
+                <img src="${pageContext.request.contextPath}${category.thumbnail}" 
+                     alt="${category.name}" 
+                     class="category-image"
+                     onerror="this.src='${pageContext.request.contextPath}/assets/images/default-category.png'">
+            </c:if>
             <div class="header-left">
                 <h1>
                     <i class='bx bx-category-alt'></i>
@@ -250,6 +264,18 @@
                 }
                 if (data.thumbnail && !data.thumbnail.startsWith('http') && !data.thumbnail.startsWith(ctx)) {
                     data.thumbnail = ctx + data.thumbnail;
+                }
+                
+                // Update sidebar display
+                const displayDiv = document.getElementById('categorySongDisplay');
+                if (displayDiv) {
+                    displayDiv.innerHTML = `
+                        <img src="${data.thumbnail}" 
+                             alt="${data.title}"
+                             onerror="this.src='${ctx}/assets/thumbs/default.png'">
+                        <h4>${data.title}</h4>
+                        <p>${data.artist || 'Unknown Artist'}</p>
+                    `;
                 }
                 
                 if (window.musicPlayer) {

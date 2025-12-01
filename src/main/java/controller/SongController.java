@@ -104,7 +104,7 @@ public class SongController extends HttpServlet {
                   .replace("\t", "\\t");
     }
 
-    // AJAX view for mode switcher
+    // AJAX view for mode switcher - detailed song view with suggestions
     private void handleSongView(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String idStr = req.getParameter("id");
         if (idStr == null) {
@@ -131,13 +131,25 @@ public class SongController extends HttpServlet {
                 req.setAttribute("category", category);
             }
 
+            // Get suggestions from same category (max 8 songs, exclude current)
+            if (song.getCategoryId() != null) {
+                List<Song> allCategorySongs = songBO.getByCategory(song.getCategoryId(), 100);
+                List<Song> suggestions = new java.util.ArrayList<>();
+                for (Song s : allCategorySongs) {
+                    if (s.getId() != id && suggestions.size() < 8) {
+                        suggestions.add(s);
+                    }
+                }
+                req.setAttribute("suggestions", suggestions);
+            }
+
             User u = (User) req.getSession().getAttribute("user");
             if (u != null) {
                 req.setAttribute("userPlaylists", playlistBO.byUser(u.getId()));
             }
 
-            // Return JSP fragment for AJAX
-            req.getRequestDispatcher("/WEB-INF/views/components/song-view.jsp").forward(req, resp);
+            // Return detailed song view with suggestions
+            req.getRequestDispatcher("/WEB-INF/views/components/song-detail-view.jsp").forward(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }

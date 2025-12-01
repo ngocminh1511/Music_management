@@ -84,7 +84,7 @@
                 <h3 class="card-title">${data.title}</h3>
                 <p class="card-description">${data.description}</p>
                 <div class="card-tech">${techBadges}</div>
-                <button class="card-cta" onclick="window.location.href='${ctx}/home'">Khám phá</button>
+                <button class="card-cta" onclick="window.location.href='${ctx}/Music_management/home'">Khám phá</button>
             </div>
         `;
         

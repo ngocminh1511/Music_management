@@ -85,8 +85,10 @@ class PlaylistManager {
         this.currentPlaylistId = playlistId;
         this.renderPlaylistList(); // Re-render to update active state
         
-        if (window.modeSwitcher) {
-            modeSwitcher.switchTo(ViewMode.PLAYLIST, { playlistId });
+        if (window.viewPlaylist) {
+            window.viewPlaylist(playlistId);
+        } else {
+            console.error('window.viewPlaylist is not defined');
         }
     }
 

@@ -132,21 +132,16 @@
 }
 .carousel-container {
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
+    overflow: visible;
     padding: 0 3rem;
     margin-bottom: 2rem;
 }
 .carousel-track {
     display: flex;
     gap: 1.5rem;
-    overflow-x: auto;
     scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 1rem 0;
-}
-.carousel-track::-webkit-scrollbar {
-    display: none;
+    padding: 0;
 }
 .carousel-btn {
     position: absolute;
@@ -173,6 +168,11 @@
 .carousel-btn.prev { left: 0.5rem; }
 .carousel-btn.next { right: 0.5rem; }
 .song-card-carousel {
+    min-width: 180px;
+    max-width: 220px;
+    flex-shrink: 0;
+}
+.category-card-carousel {
     min-width: 180px;
     max-width: 220px;
     flex-shrink: 0;
@@ -206,7 +206,8 @@
 <div class="discover-view">
     <!-- Search Results Section (when searching) -->
     <c:if test="${not empty param.q or not empty param.category or not empty param.singer}">
-        <section style="margin-bottom: 2rem;">
+        <!-- <section style="margin-bottom: 2rem;"> -->
+        <section>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h3 class="section-title">
                     <i class='bx bx-search'></i> 
@@ -252,17 +253,21 @@
     <!-- Categories -->
     <section style="margin-bottom: 3rem;">
         <h3 class="section-title"><i class='bx bx-category-alt'></i> Danh mục âm nhạc</h3>
-        <div class="category-grid">
-            <c:forEach var="cat" items="${categories}">
-                <div class="category-card" data-category-id="${cat.id}">
-                    <img src="${pageContext.request.contextPath}${cat.thumbnail}" 
-                         alt="${cat.name}"
-                         onerror="this.src='${pageContext.request.contextPath}/assets/thumbs/default.png'">
-                    <div class="category-card-body">
-                        <div class="category-card-title">${cat.name}</div>
+        <div class="carousel-container">
+            <button class="carousel-btn prev" onclick="scrollCarousel('categories', -1)">‹</button>
+            <div class="carousel-track" id="categories-track">
+                <c:forEach var="cat" items="${categories}">
+                    <div class="category-card category-card-carousel" data-category-id="${cat.id}">
+                        <img src="${pageContext.request.contextPath}${cat.thumbnail}" 
+                             alt="${cat.name}"
+                             onerror="this.src='${pageContext.request.contextPath}/assets/thumbs/default.png'">
+                        <div class="category-card-body">
+                            <div class="category-card-title">${cat.name}</div>
+                        </div>
                     </div>
-                </div>
-            </c:forEach>
+                </c:forEach>
+            </div>
+            <button class="carousel-btn next" onclick="scrollCarousel('categories', 1)">›</button>
         </div>
     </section>
 
@@ -291,10 +296,10 @@
     </section>
 
     <!-- Latest Songs Carousel -->
-    <section style="margin-bottom: 2rem;">
+    <!-- <section style="margin-bottom: 2rem;"> -->
+    <section>    
         <h3 class="section-title"><i class='bx bx-headphone'></i> Bài hát mới nhất</h3>
-        <div class="carousel-container">
-            <button class="carousel-btn prev" onclick="scrollCarousel('songs', -1)">‹</button>
+        <div class="carousel-container" style="padding: 0;">
             <div class="carousel-track" id="songs-track">
                 <c:forEach var="s" items="${songs}" varStatus="status">
                     <c:if test="${status.index < 10}">
@@ -312,7 +317,7 @@
                     </c:if>
                 </c:forEach>
             </div>
-            <button class="carousel-btn next" onclick="scrollCarousel('songs', 1)">›</button>
+             <button class="carousel-btn next" onclick="scrollCarousel('songs', 1)">›</button>
         </div>
     </section>
 
@@ -342,46 +347,84 @@
 <script>
 // Event delegation for all interactive elements
 (function() {
-    // Wait a bit for DOM to be ready if needed
+    'use strict';
+    
     function initDiscoverEvents() {
+        console.log('🎵 Initializing Discover View events...');
+        
         // Category cards
-        document.querySelectorAll('.category-card').forEach(card => {
-            card.addEventListener('click', function() {
+        const categoryCards = document.querySelectorAll('.category-card');
+        console.log('Found category cards:', categoryCards.length);
+        categoryCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
                 const categoryId = parseInt(this.dataset.categoryId);
-                if (window.viewCategory) window.viewCategory(categoryId);
+                console.log('Category clicked:', categoryId);
+                if (window.viewCategory) {
+                    window.viewCategory(categoryId);
+                } else {
+                    console.error('window.viewCategory is not defined!');
+                }
             });
         });
         
         // Song cards
-        document.querySelectorAll('.song-card').forEach(card => {
-            card.addEventListener('click', function() {
+        const songCards = document.querySelectorAll('.song-card');
+        console.log('Found song cards:', songCards.length);
+        songCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
                 const songId = parseInt(this.dataset.songId);
-                if (window.viewSong) window.viewSong(songId);
+                console.log('Song card clicked:', songId);
+                if (window.viewSong) {
+                    window.viewSong(songId);
+                } else {
+                    console.error('window.viewSong is not defined!');
+                }
             });
         });
         
         // Top items
-        document.querySelectorAll('.top-item').forEach(item => {
-            item.addEventListener('click', function() {
+        const topItems = document.querySelectorAll('.top-item');
+        console.log('Found top items:', topItems.length);
+        topItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
                 const songId = parseInt(this.dataset.songId);
-                if (window.viewSong) window.viewSong(songId);
+                console.log('Top item clicked:', songId);
+                if (window.viewSong) {
+                    window.viewSong(songId);
+                } else {
+                    console.error('window.viewSong is not defined!');
+                }
             });
         });
         
         // Artist cards
-        document.querySelectorAll('.artist-card').forEach(card => {
-            card.addEventListener('click', function() {
+        const artistCards = document.querySelectorAll('.artist-card');
+        console.log('Found artist cards:', artistCards.length);
+        artistCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
                 const singerId = parseInt(this.dataset.singerId);
-                if (window.viewSinger) window.viewSinger(singerId);
+                console.log('🎤 Artist card clicked, Singer ID:', singerId);
+                if (window.viewSinger) {
+                    console.log('Calling window.viewSinger...');
+                    window.viewSinger(singerId);
+                } else {
+                    console.error('❌ window.viewSinger is not defined!');
+                    console.log('Available window functions:', Object.keys(window).filter(k => k.startsWith('view')));
+                }
             });
         });
+        
+        console.log('✅ Discover View events initialized successfully');
     }
     
-    // Run immediately if DOM is ready, otherwise wait
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initDiscoverEvents);
-    } else {
+    // Use setTimeout to ensure DOM is fully rendered after AJAX load
+    setTimeout(function() {
+        console.log('Document readyState:', document.readyState);
         initDiscoverEvents();
-    }
+    }, 100);
 })();
 </script>

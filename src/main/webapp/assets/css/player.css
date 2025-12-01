@@ -16,8 +16,9 @@
     position: sticky;
     top: 100px;
     height: fit-content;
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
+    /* Remove inner scrollbars; rely on page scroll */
+    /* max-height: calc(100vh - 120px); */
+    /* overflow-y: auto; */
     transition: all 0.3s ease;
 }
 
@@ -46,19 +47,7 @@
     transform: rotate(180deg);
 }
 
-.sidebar-left::-webkit-scrollbar {
-    width: 6px;
-}
-
-.sidebar-left::-webkit-scrollbar-track {
-    background: rgba(122, 92, 255, 0.1);
-    border-radius: 10px;
-}
-
-.sidebar-left::-webkit-scrollbar-thumb {
-    background: var(--accent-purple);
-    border-radius: 10px;
-}
+/* Remove custom scrollbars for inner elements */
 
 .playlist-sidebar-header {
     display: flex;
@@ -210,28 +199,12 @@
 .main-content {
     flex: 1;
     min-height: 600px;
-    overflow-y: auto;
-    max-height: calc(100vh - 100px);
+    /* overflow-y: auto; */
+    /* max-height: calc(100vh - 100px); */
     padding-right: 0.5rem;
 }
 
-.main-content::-webkit-scrollbar {
-    width: 8px;
-}
-
-.main-content::-webkit-scrollbar-track {
-    background: rgba(122, 92, 255, 0.1);
-    border-radius: 10px;
-}
-
-.main-content::-webkit-scrollbar-thumb {
-    background: var(--accent-purple);
-    border-radius: 10px;
-}
-
-.main-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(122, 92, 255, 0.8);
-}
+/* Remove custom scrollbars for inner elements */
 
 .content-mode {
     display: none;

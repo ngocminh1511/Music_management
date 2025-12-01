@@ -34,7 +34,8 @@ const ViewMode = {
     DISCOVER: 1,
     SONG: 2,
     PLAYLIST: 3,
-    CATEGORY: 4
+    CATEGORY: 4,
+    SINGER: 5
 };
 
 class ModeSwitcher {
@@ -70,7 +71,7 @@ class ModeSwitcher {
         const ctx = window.APP_CONTEXT || '';
         let url = '';
         
-        switch(mode) {
+        switch (mode) {
             case ViewMode.DISCOVER:
                 url = `${ctx}/home/discover`;
                 break;
@@ -82,6 +83,9 @@ class ModeSwitcher {
                 break;
             case ViewMode.CATEGORY:
                 url = `${ctx}/category/view?id=${data.categoryId}`;
+                break;
+            case ViewMode.SINGER:
+                url = `${ctx}/singer/view?id=${data.singerId}`;
                 break;
         }
 
@@ -125,19 +129,46 @@ class ModeSwitcher {
     executeScripts() {
         // Find and execute all script tags in the loaded content
         const scripts = this.contentArea.querySelectorAll('script');
-        console.log('Executing scripts:', scripts.length);
+        console.log('📜 Executing scripts from loaded content:', scripts.length);
         
-        scripts.forEach(script => {
-            const newScript = document.createElement('script');
-            if (script.src) {
-                newScript.src = script.src;
-            } else {
-                newScript.textContent = script.textContent;
+        scripts.forEach((script, index) => {
+            try {
+                const newScript = document.createElement('script');
+                newScript.type = 'text/javascript';
+                
+                if (script.src) {
+                    // External script
+                    newScript.src = script.src;
+                    console.log(`Loading external script ${index + 1}:`, script.src);
+                } else {
+                    // Inline script
+                    newScript.textContent = script.textContent;
+                    console.log(`Executing inline script ${index + 1}, length:`, script.textContent.length);
+                }
+                
+                // Append to body to execute
+                document.body.appendChild(newScript);
+                
+                // Keep inline scripts (they execute immediately)
+                // Remove external scripts after load
+                if (script.src) {
+                    newScript.onload = () => {
+                        console.log(`✅ External script ${index + 1} loaded`);
+                        setTimeout(() => document.body.removeChild(newScript), 100);
+                    };
+                    newScript.onerror = () => {
+                        console.error(`❌ Failed to load script ${index + 1}:`, script.src);
+                    };
+                } else {
+                    // For inline scripts, don't remove immediately
+                    console.log(`✅ Inline script ${index + 1} executed`);
+                }
+            } catch (error) {
+                console.error(`❌ Error executing script ${index + 1}:`, error);
             }
-            // Append và remove để trigger execution
-            document.body.appendChild(newScript);
-            setTimeout(() => document.body.removeChild(newScript), 100);
         });
+        
+        console.log('✅ All scripts processed');
     }
 
     updateURL(mode, data) {
@@ -173,6 +204,11 @@ window.viewCategory = function(categoryId) {
     modeSwitcher.switchTo(ViewMode.CATEGORY, { categoryId });
 };
 
+window.viewSinger = function(singerId) {
+    console.log('viewSinger called with ID:', singerId);
+    modeSwitcher.switchTo(ViewMode.SINGER, { singerId });
+};
+
 window.viewDiscover = function() {
     console.log('viewDiscover called');
     modeSwitcher.switchTo(ViewMode.DISCOVER, { reload: true });
@@ -192,9 +228,7 @@ function viewCategory(categoryId) {
 }
 
 function viewSinger(singerId) {
-    const ctx = window.APP_CONTEXT || '';
-    console.log('Redirecting to singer:', singerId);
-    window.location.href = ctx + '/home?singer=' + singerId;
+    window.viewSinger(singerId);
 }
 
 function viewProfile() {

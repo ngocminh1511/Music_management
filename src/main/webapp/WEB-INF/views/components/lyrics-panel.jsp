@@ -18,23 +18,7 @@
     background: linear-gradient(135deg, rgba(26, 26, 27, 0.95) 0%, rgba(10, 10, 11, 0.95) 100%);
     border-radius: 12px;
     padding: 1.5rem;
-    max-height: 500px;
-    overflow-y: auto;
     border: 1px solid rgba(122, 92, 255, 0.2);
-}
-
-.lyrics-panel::-webkit-scrollbar {
-    width: 6px;
-}
-
-.lyrics-panel::-webkit-scrollbar-track {
-    background: rgba(122, 92, 255, 0.1);
-    border-radius: 10px;
-}
-
-.lyrics-panel::-webkit-scrollbar-thumb {
-    background: var(--accent-purple);
-    border-radius: 10px;
 }
 
 .lyrics-content {

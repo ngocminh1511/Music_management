@@ -12,7 +12,7 @@
 }
 
 .playlist-sidebar {
-    flex: 4;
+    flex: 0 0 350px;
     position: sticky;
     top: 100px;
     height: fit-content;
@@ -89,11 +89,17 @@
 
 .playlist-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    gap: 1.5rem;
+    align-items: center;
     margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(122, 92, 255, 0.2);
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(122, 92, 255, 0.15) 0%, rgba(0, 194, 255, 0.1) 100%);
+    border: 1px solid rgba(122, 92, 255, 0.2);
+    border-radius: 12px;
+}
+
+.playlist-header-info {
+    flex: 1;
 }
 
 .playlist-actions {
@@ -107,10 +113,13 @@
     <!-- Main Content (60%): Song List -->
     <div class="playlist-main-content">
         <div class="playlist-header">
-            <div>
-                <h1 id="playlistTitle">${playlist.name}</h1>
+            <div class="playlist-header-info">
+                <h1 id="playlistTitle">
+                    <i class='bx bx-list-ul'></i>
+                    ${playlist.name}
+                </h1>
                 <div class="playlist-info">
-                    <p>${songs.size()} bài hát</p>
+                    <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary);">${songs.size()} bài hát</p>
                 </div>
             </div>
             <div class="playlist-actions">
@@ -172,15 +181,23 @@
 <script>
 // Make functions global for inline onclick handlers
 (function() {
+    'use strict';
+    
     const playlistSongs = [];
     <c:forEach var="song" items="${songs}">
+    try {
         playlistSongs.push({
             id: parseInt('${song.id}'),
-            title: '${song.title}',
-            artist: '<c:if test="${not empty song.singerId}">${singerMap[song.singerId]}</c:if>',
-            thumbnail: '${song.thumbnail}'
+            title: '<c:out value="${song.title}" escapeXml="true"/>',
+            artist: '<c:if test="${not empty song.singerId}"><c:out value="${singerMap[song.singerId]}" escapeXml="true"/></c:if>',
+            thumbnail: '<c:out value="${song.thumbnail}" escapeXml="false"/>'
         });
+    } catch (e) {
+        console.error('Error parsing song ${song.id}:', e);
+    }
     </c:forEach>
+    
+    console.log('Playlist songs loaded:', playlistSongs.length);
 
     // Event delegation for song items
     document.querySelectorAll('.playlist-song-item').forEach(item => {
@@ -241,6 +258,18 @@
                 }
                 if (data.thumbnail && !data.thumbnail.startsWith('http') && !data.thumbnail.startsWith(ctx)) {
                     data.thumbnail = ctx + data.thumbnail;
+                }
+                
+                // Update sidebar display
+                const displayDiv = document.getElementById('nowPlayingDisplay');
+                if (displayDiv) {
+                    displayDiv.innerHTML = `
+                        <img src="${data.thumbnail}" 
+                             alt="${data.title}"
+                             onerror="this.src='${ctx}/assets/thumbs/default.png'">
+                        <h4>${data.title}</h4>
+                        <p>${data.artist || 'Unknown Artist'}</p>
+                    `;
                 }
                 
                 if (window.musicPlayer) {

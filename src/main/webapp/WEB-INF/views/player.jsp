@@ -89,8 +89,6 @@
     background: var(--bg-card);
     border-radius: 15px;
     padding: 1.5rem;
-    max-height: 80vh;
-    overflow-y: auto;
 }
 
 .playlist-header {
