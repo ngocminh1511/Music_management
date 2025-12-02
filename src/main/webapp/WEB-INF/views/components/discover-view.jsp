@@ -132,16 +132,23 @@
 }
 .carousel-container {
     position: relative;
-    /* overflow: hidden; */
-    overflow: visible;
+    overflow: hidden;
+    /* overflow: visible; */
     padding: 0 3rem;
-    margin-bottom: 2rem;
+    margin-bottom: rem;
+    height: auto;
 }
 .carousel-track {
     display: flex;
     gap: 1.5rem;
     scroll-behavior: smooth;
-    padding: 0;
+    padding: 1rem 0;
+    /* overflow-x: hidden; Ẩn scrollbar ngang */
+    overflow-x: auto;
+}
+
+.carousel-track::-webkit-scrollbar {
+    display: none;
 }
 .carousel-btn {
     position: absolute;
@@ -296,10 +303,10 @@
     </section>
 
     <!-- Latest Songs Carousel -->
-    <!-- <section style="margin-bottom: 2rem;"> -->
-    <section>    
+    <section style="margin-bottom: 2rem;">    
         <h3 class="section-title"><i class='bx bx-headphone'></i> Bài hát mới nhất</h3>
-        <div class="carousel-container" style="padding: 0;">
+        <div class="carousel-container">
+            <button class="carousel-btn prev" onclick="scrollCarousel('songs', -1)">‹</button>
             <div class="carousel-track" id="songs-track">
                 <c:forEach var="s" items="${songs}" varStatus="status">
                     <c:if test="${status.index < 10}">
@@ -317,7 +324,7 @@
                     </c:if>
                 </c:forEach>
             </div>
-             <button class="carousel-btn next" onclick="scrollCarousel('songs', 1)">›</button>
+            <button class="carousel-btn next" onclick="scrollCarousel('songs', 1)">›</button>
         </div>
     </section>
 
@@ -427,4 +434,16 @@
         initDiscoverEvents();
     }, 100);
 })();
+
+// Global scrollCarousel function
+window.scrollCarousel = function(trackId, direction) {
+    const track = document.getElementById(trackId + '-track');
+    if (track) {
+        const scrollAmount = 400;
+        track.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+};
 </script>

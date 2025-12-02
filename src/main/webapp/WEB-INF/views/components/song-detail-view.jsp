@@ -142,12 +142,20 @@
 .suggestions-carousel-container {
     position: relative;
     padding: 0 3rem;
+    overflow: hidden;
 }
 
 .suggestions-carousel-track {
     display: flex;
     gap: 1.5rem;
     scroll-behavior: smooth;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.suggestions-carousel-track::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
 }
 
 .suggestions-carousel-btn {
@@ -190,8 +198,7 @@
     padding: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 180px;
-    max-width: 220px;
+    width: 200px;
     flex-shrink: 0;
 }
 

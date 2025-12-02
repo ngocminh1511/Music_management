@@ -1,141 +1,185 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<jsp:include page="fragments/header.jsp">
-    <jsp:param name="pageTitle" value="Đăng ký - GenZ Beats" />
-</jsp:include>
-
-<style>
-.auth-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    padding: 2rem;
-}
-.auth-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 3rem;
-    max-width: 450px;
-    width: 100%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-.auth-logo {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-.auth-logo h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 0.5rem;
-}
-.auth-logo p {
-    color: #666;
-    font-size: 0.95rem;
-}
-.form-group {
-    margin-bottom: 1.5rem;
-}
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #333;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-.form-control {
-    width: 100%;
-    padding: 0.9rem 1.2rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s;
-    background: white;
-}
-.form-control:focus {
-    outline: none;
-    border-color: #f093fb;
-    box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.1);
-}
-.btn-auth {
-    width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 1rem;
-}
-.btn-auth:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(240, 147, 251, 0.4);
-}
-.auth-footer {
-    text-align: center;
-    margin-top: 1.5rem;
-    color: #666;
-    font-size: 0.95rem;
-}
-.auth-footer a {
-    color: #f5576c;
-    text-decoration: none;
-    font-weight: 600;
-}
-.auth-footer a:hover {
-    text-decoration: underline;
-}
-.error-message {
-    background: #fee;
-    color: #c33;
-    padding: 0.8rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-}
-</style>
-
-<div class="auth-container">
-    <div class="auth-card">
-        <div class="auth-logo">
-            <h1>🎵 GenZ Beats</h1>
-            <p>Tạo tài khoản mới</p>
-        </div>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - GenZ Beats</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
         
-        <c:if test="${not empty error}">
-            <div class="error-message">${error}</div>
-        </c:if>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url('${pageContext.request.contextPath}/assets/bg/bg_register.png') no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
         
+        .wrapper {
+            width: 420px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, .2);
+            backdrop-filter: blur(20px);
+            color: #fff;
+            border-radius: 12px;
+            padding: 30px 40px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+        }
+        
+        .wrapper h1 {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .wrapper .subtitle {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .wrapper .input-box {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            margin: 30px 0;
+        }
+        
+        .input-box input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            border: 2px solid rgba(255, 255, 255, .2);
+            border-radius: 40px;
+            font-size: 16px;
+            color: #fff;
+            padding: 20px 45px 20px 20px;
+        }
+        
+        .input-box input::placeholder {
+            color: rgba(255, 255, 255, .8);
+        }
+        
+        .input-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+        
+        .wrapper .btn {
+            width: 100%;
+            height: 45px;
+            background: #fff;
+            border: none;
+            outline: none;
+            border-radius: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .wrapper .btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+        }
+        
+        .wrapper .login-link {
+            font-size: 14.5px;
+            text-align: center;
+            margin: 20px 0 15px;
+        }
+        
+        .login-link p a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link p a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: rgba(255, 77, 77, 0.9);
+            color: #fff;
+            padding: 12px;
+            border-radius: 40px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            border: 2px solid rgba(255, 255, 255, .2);
+        }
+        
+        @media (max-width: 480px) {
+            .wrapper {
+                width: 90%;
+                padding: 25px 30px;
+            }
+            
+            .wrapper h1 {
+                font-size: 28px;
+            }
+            
+            .wrapper .input-box {
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
         <form method="post" action="${pageContext.request.contextPath}/register">
-            <div class="form-group">
-                <label for="username">👤 Tên đăng nhập</label>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Chọn username" required autofocus>
+            <h1><i class='bx bxs-music'></i> Register</h1>
+            <p class="subtitle">Tạo tài khoản GenZ Beats mới</p>
+            
+            <c:if test="${not empty error}">
+                <div class="error-message">
+                    <i class='bx bx-error-circle'></i> ${error}
+                </div>
+            </c:if>
+            
+            <div class="input-box">
+                <input type="text" name="username" placeholder="Username" required autofocus>
+                <i class='bx bxs-user'></i>
             </div>
             
-            <div class="form-group">
-                <label for="email">📧 Email</label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="email@example.com">
+            <div class="input-box">
+                <input type="email" name="email" placeholder="Email (optional)">
+                <i class='bx bxs-envelope'></i>
             </div>
             
-            <div class="form-group">
-                <label for="password">🔒 Mật khẩu</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Tạo mật khẩu mạnh" required>
+            <div class="input-box">
+                <input type="password" name="password" placeholder="Password" required>
+                <i class='bx bxs-lock-alt'></i>
             </div>
             
-            <button type="submit" class="btn-auth">Đăng ký</button>
+            <button type="submit" class="btn">Register</button>
+            
+            <div class="login-link">
+                <p>Already have an account? <a href="${pageContext.request.contextPath}/login">Login</a></p>
+            </div>
         </form>
-        
-        <div class="auth-footer">
-            Đã có tài khoản? <a href="${pageContext.request.contextPath}/login">Đăng nhập</a>
-        </div>
     </div>
-</div>
-
-<jsp:include page="fragments/footer.jsp" />
+</body>
+</html>

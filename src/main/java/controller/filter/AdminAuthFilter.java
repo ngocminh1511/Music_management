@@ -23,7 +23,8 @@ public class AdminAuthFilter implements Filter {
         }
 
         if (user.getRole() == null || !"ADMIN".equalsIgnoreCase(user.getRole())) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            // User thường không có quyền truy cập admin, chuyển về trang home
+            resp.sendRedirect(req.getContextPath() + "/home");
             return;
         }
 
